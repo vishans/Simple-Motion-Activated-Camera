@@ -24,8 +24,9 @@ height = vid.get(4)  # float `height`
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
 out = None # cv2.VideoWriter('output.avi', fourcc, 20, frameSize = (int(width), int(height)))
 
+ 
 currentFrame = vid.read()[1]
-currentFrame = cv2.resize(currentFrame, (100, int(100 / (width/height))), interpolation = cv2.INTER_AREA)
+currentFrame = cv2.resize(currentFrame, resizedFrameDim := (100, int(100 / (width/height))), interpolation = cv2.INTER_AREA)
 gray = cv2.cvtColor(currentFrame, cv2.COLOR_BGR2GRAY)
 gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
@@ -34,7 +35,7 @@ rec = False
 timeStamp = time()
   
 while(True):
-    rec = False
+    rec = False 
       
     # Capture the video frame
     # by frame
@@ -42,7 +43,7 @@ while(True):
 
     originalFrame = frame
 
-    frame = cv2.resize(frame, (100, int(100 / (width/height))), interpolation = cv2.INTER_AREA)
+    frame = cv2.resize(frame, resizedFrameDim, interpolation = cv2.INTER_AREA)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -54,7 +55,7 @@ while(True):
 
     if not((thresh == np.zeros_like(thresh)).all()):
         # reset timer
-        print('Motion Detected')
+        # print('Motion Detected')
         timeStamp = time()
 
     if time() - timeStamp < COOLDOWN:
@@ -67,9 +68,9 @@ while(True):
 
     else:
         if out:
-            print('Cooled Down. Recording stopped.')
+            # print('Cooled Down. Recording stopped.')
             gfile = drive.CreateFile({'parents': [{'id': '1PUKk8co6c2U4JKptKJ96UgaPEU1ss3gL'}]})
-            gfile.SetContentFile(f'output{vidCount}_{datetime.now().strftime("%b-%d-%G %H:%M:%S")}.avi')
+            gfile.SetContentFile(f'output{vidCount}.avi')
             gfile.Upload() # Upload the file.
             vidCount += 1
             out.release()
@@ -77,7 +78,7 @@ while(True):
 
 
   
-    cv2.imshow('frame', displayFrame)
+    # cv2.imshow('frame', displayFrame)
 
     currentFrame = gray
      
